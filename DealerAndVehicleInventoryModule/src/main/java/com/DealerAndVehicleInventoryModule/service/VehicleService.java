@@ -2,46 +2,59 @@ package com.DealerAndVehicleInventoryModule.service;
 
 
 import com.DealerAndVehicleInventoryModule.config.TenantContext;
+import com.DealerAndVehicleInventoryModule.entity.Dealer;
 import com.DealerAndVehicleInventoryModule.entity.Vehicle;
+import com.DealerAndVehicleInventoryModule.enums.SubscriptionType;
+import com.DealerAndVehicleInventoryModule.enums.VehicleStatus;
+import com.DealerAndVehicleInventoryModule.repository.DealerRepository;
 import com.DealerAndVehicleInventoryModule.repository.VehicleRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
+import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class VehicleService {
 
     private final VehicleRepository repo;
+    private final DealerRepository dealerRepo;
 
-    public VehicleService(VehicleRepository repo) {
+    public VehicleService(VehicleRepository repo, DealerRepository dealerRepo) {
         this.repo = repo;
+        this.dealerRepo = dealerRepo;
     }
 
     public Vehicle create(Vehicle v) {
+        String tenant = TenantContext.getTenant();
+
+        Dealer dealer = dealerRepo.findByIdAndTenantId(
+                v.getDealer().getId(), tenant
+        ).orElseThrow(() -> new RuntimeException("Invalid dealer"));
+
         v.setId(UUID.randomUUID());
-        v.setTenantId(TenantContext.getTenant());
+        v.setTenantId(tenant);
+        v.setDealer(dealer);
+
         return repo.save(v);
     }
 
-    public Vehicle get(UUID id) {
-        return repo.findByIdAndTenantId(id, TenantContext.getTenant())
-                .orElseThrow(() -> new RuntimeException("Not found"));
-    }
+    public Page<Vehicle> getAll(String model,
+                                VehicleStatus status,
+                                BigDecimal min,
+                                BigDecimal max,
+                                SubscriptionType subscription,
+                                Pageable pageable) {
 
-    public List<Vehicle> getAll(String model, String status,
-                                Double min, Double max) {
-
-        return repo.findByTenantId(TenantContext.getTenant())
-                .stream()
-                .filter(v -> model == null || v.getModel().equals(model))
-                .filter(v -> status == null || v.getStatus().name().equals(status))
-                .filter(v -> min == null || v.getPrice().doubleValue() >= min)
-                .filter(v -> max == null || v.getPrice().doubleValue() <= max)
-                .collect(Collectors.toList());
-    }
-
-    public void delete(UUID id) {
-        repo.delete(get(id));
+        return repo.filter(
+                TenantContext.getTenant(),
+                model,
+                status,
+                min,
+                max,
+                subscription,
+                pageable
+        );
     }
 }

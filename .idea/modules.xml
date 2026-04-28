@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DealerAndVehicleInventoryModule.iml" filepath="$PROJECT_DIR$/.idea/DealerAndVehicleInventoryModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/AutoVault.iml" filepath="$PROJECT_DIR$/.idea/AutoVault.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DealerAndVehicleInventoryModule/DealerAndVehicleInventoryModule.iml" filepath="$PROJECT_DIR$/DealerAndVehicleInventoryModule/DealerAndVehicleInventoryModule.iml" />
     </modules>
   </component>
 </project>

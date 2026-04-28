@@ -3,9 +3,11 @@ package com.DealerAndVehicleInventoryModule.service;
 import com.DealerAndVehicleInventoryModule.config.TenantContext;
 import com.DealerAndVehicleInventoryModule.entity.Dealer;
 import com.DealerAndVehicleInventoryModule.repository.DealerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.UUID;
 
 @Service
 public class DealerService {
@@ -24,23 +26,31 @@ public class DealerService {
 
     public Dealer get(UUID id) {
         return repo.findByIdAndTenantId(id, TenantContext.getTenant())
-                .orElseThrow(() -> new RuntimeException("Not found"));
+                .orElseThrow(() -> new RuntimeException("Dealer not found or forbidden"));
     }
 
-    public List<Dealer> getAll() {
-        return repo.findByTenantId(TenantContext.getTenant());
-    }
-
-    public void delete(UUID id) {
-        Dealer d = get(id);
-        repo.delete(d);
+    public Page<Dealer> getAll(Pageable pageable) {
+        return repo.findByTenantId(TenantContext.getTenant(), pageable);
     }
 
     public Dealer update(UUID id, Dealer updated) {
-        Dealer d = get(id);
-        d.setName(updated.getName());
-        d.setEmail(updated.getEmail());
-        d.setSubscriptionType(updated.getSubscriptionType());
-        return repo.save(d);
+        Dealer existing = get(id);
+
+        if (updated.getName() != null) {
+            existing.setName(updated.getName());
+        }
+        if (updated.getEmail() != null) {
+            existing.setEmail(updated.getEmail());
+        }
+        if (updated.getSubscriptionType() != null) {
+            existing.setSubscriptionType(updated.getSubscriptionType());
+        }
+
+        return repo.save(existing);
+    }
+
+    public void delete(UUID id) {
+        Dealer dealer = get(id);
+        repo.delete(dealer);
     }
 }

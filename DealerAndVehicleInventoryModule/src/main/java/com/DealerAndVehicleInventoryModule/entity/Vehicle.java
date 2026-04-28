@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-
 @Entity
 public class Vehicle {
 
@@ -13,19 +12,26 @@ public class Vehicle {
     private UUID id;
 
     private String tenantId;
-    private UUID dealerId;
+
+    @ManyToOne
+    @JoinColumn(name = "dealer_id")
+    private Dealer dealer;
+
     private String model;
+
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     private VehicleStatus status;
 
-    public String getTenantId() {
-        return tenantId;
+    // getters & setters
+
+    public Dealer getDealer() {
+        return dealer;
     }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public void setDealer(Dealer dealer) {
+        this.dealer = dealer;
     }
 
     public UUID getId() {
@@ -36,20 +42,20 @@ public class Vehicle {
         this.id = id;
     }
 
-    public UUID getDealerId() {
-        return dealerId;
-    }
-
-    public void setDealerId(UUID dealerId) {
-        this.dealerId = dealerId;
-    }
-
     public String getModel() {
         return model;
     }
 
     public void setModel(String model) {
         this.model = model;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public BigDecimal getPrice() {
@@ -66,17 +72,5 @@ public class Vehicle {
 
     public void setStatus(VehicleStatus status) {
         this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Vehicle{" +
-                "id=" + id +
-                ", tenantId='" + tenantId + '\'' +
-                ", dealerId=" + dealerId +
-                ", model='" + model + '\'' +
-                ", price=" + price +
-                ", status=" + status +
-                '}';
     }
 }

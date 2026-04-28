@@ -1,12 +1,14 @@
 package com.DealerAndVehicleInventoryModule.controller;
 
-import com.DealerAndVehicleInventoryModule.config.SecurityUtil;
+import com.DealerAndVehicleInventoryModule.enums.SubscriptionType;
 import com.DealerAndVehicleInventoryModule.repository.DealerRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.file.AccessDeniedException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,17 +23,22 @@ public class AdminController {
     }
 
     @GetMapping("/dealers/countBySubscription")
-    public Map<String, Long> count(HttpServletRequest request) {
+    public Map<SubscriptionType, Long> countBySubscription(
+            @RequestHeader("X-Role") String role
+    ) {
 
-        if (!SecurityUtil.isAdmin(request)) {
+
+        if (!"GLOBAL_ADMIN".equals(role)) {
             throw new RuntimeException("Forbidden");
         }
 
-        return repo.findAll()
-                .stream()
-                .collect(Collectors.groupingBy(
-                        d -> d.getSubscriptionType().name(),
-                        Collectors.counting()
-                ));
+        Map<SubscriptionType, Long> result = new EnumMap<>(SubscriptionType.class);
+
+        for (SubscriptionType type : SubscriptionType.values()) {
+            long count = repo.countBySubscriptionType(type);
+            result.put(type, count);
+        }
+
+        return result;
     }
 }

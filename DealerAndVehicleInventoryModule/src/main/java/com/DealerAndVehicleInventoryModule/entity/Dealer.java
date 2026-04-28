@@ -2,6 +2,9 @@ package com.DealerAndVehicleInventoryModule.entity;
 
 import com.DealerAndVehicleInventoryModule.enums.SubscriptionType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.UUID;
 
 @Entity
@@ -11,7 +14,12 @@ public class Dealer {
     private UUID id;
 
     private String tenantId;
+
+    @NotBlank
     private String name;
+
+    @Email
+    @NotBlank
     private String email;
 
     @Enumerated(EnumType.STRING)
