@@ -25,7 +25,6 @@ public class VehicleService {
         this.dealerRepo = dealerRepo;
     }
 
-    // ✅ CREATE
     public Vehicle create(Vehicle v) {
         String tenant = TenantContext.getTenant();
 
