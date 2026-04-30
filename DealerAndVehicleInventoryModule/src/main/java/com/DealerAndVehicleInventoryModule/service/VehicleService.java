@@ -40,7 +40,6 @@ public class VehicleService {
         return repo.save(v);
     }
 
-    // ✅ GET BY ID
     public Vehicle get(UUID id) {
         String tenant = TenantContext.getTenant();
 
@@ -48,7 +47,6 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Vehicle not found or forbidden"));
     }
 
-    // ✅ GET ALL (filters + pagination + subscription)
     public Page<Vehicle> getAll(String model,
                                 VehicleStatus status,
                                 BigDecimal min,
@@ -69,7 +67,6 @@ public class VehicleService {
         );
     }
 
-    // ✅ UPDATE
     public Vehicle update(UUID id, Vehicle updated) {
         String tenant = TenantContext.getTenant();
 
@@ -88,7 +85,6 @@ public class VehicleService {
             existing.setStatus(updated.getStatus());
         }
 
-        // optional dealer update
         if (updated.getDealerId() != null && updated.getDealerId().getId() != null) {
 
             Dealer dealer = dealerRepo.findByIdAndTenantId(
@@ -101,7 +97,6 @@ public class VehicleService {
         return repo.save(existing);
     }
 
-    // ✅ DELETE
     public void delete(UUID id) {
         String tenant = TenantContext.getTenant();
 

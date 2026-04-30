@@ -14,9 +14,6 @@ public interface DealerRepository extends JpaRepository<Dealer, UUID> {
 
     Page<Dealer> findByTenantId(String tenantId, Pageable pageable);
 
-    // ✅ GLOBAL count (used by admin)
     long countBySubscriptionType(SubscriptionType type);
 
-    // ✅ OPTIONAL (better clarity if interviewer asks)
-    long countByTenantIdAndSubscriptionType(String tenantId, SubscriptionType type);
 }

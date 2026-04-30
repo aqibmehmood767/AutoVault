@@ -26,13 +26,11 @@ public class VehicleController {
         return service.create(vehicle);
     }
 
-    // ✅ GET by ID
     @GetMapping("/{id}")
     public Vehicle get(@PathVariable UUID id) {
         return service.get(id);
     }
 
-    // ✅ FILTER + PAGINATION + SUBSCRIPTION
     @GetMapping
     public Page<Vehicle> getAll(
             @RequestParam(required = false) String model,
@@ -45,14 +43,12 @@ public class VehicleController {
         return service.getAll(model, status, priceMin, priceMax, subscription, pageable);
     }
 
-    // ✅ PATCH (partial update)
     @PatchMapping("/{id}")
     public Vehicle update(@PathVariable UUID id,
                           @RequestBody Vehicle vehicle) {
         return service.update(id, vehicle);
     }
 
-    // ✅ DELETE
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         service.delete(id);

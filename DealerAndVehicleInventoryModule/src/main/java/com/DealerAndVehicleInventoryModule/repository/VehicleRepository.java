@@ -13,10 +13,8 @@ import java.util.*;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 
-    // ✅ REQUIRED for tenant security
     Optional<Vehicle> findByIdAndTenantId(UUID id, String tenantId);
 
-    // ✅ FILTER QUERY (FIXED)
     @Query("""
     SELECT v FROM Vehicle v
     WHERE v.tenantId = :tenant

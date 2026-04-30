@@ -24,8 +24,6 @@ public class Vehicle {
     @Enumerated(EnumType.STRING)
     private VehicleStatus status;
 
-    // getters & setters
-
     public Dealer getDealerId() {
         return dealerId;
     }
