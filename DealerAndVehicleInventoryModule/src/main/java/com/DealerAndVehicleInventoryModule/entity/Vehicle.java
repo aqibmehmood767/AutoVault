@@ -15,7 +15,7 @@ public class Vehicle {
 
     @ManyToOne
     @JoinColumn(name = "dealer_id")
-    private Dealer dealer;
+    private Dealer dealerId;
 
     private String model;
 
@@ -26,12 +26,12 @@ public class Vehicle {
 
     // getters & setters
 
-    public Dealer getDealer() {
-        return dealer;
+    public Dealer getDealerId() {
+        return dealerId;
     }
 
-    public void setDealer(Dealer dealer) {
-        this.dealer = dealer;
+    public void setDealerId(Dealer dealerId) {
+        this.dealerId = dealerId;
     }
 
     public UUID getId() {
