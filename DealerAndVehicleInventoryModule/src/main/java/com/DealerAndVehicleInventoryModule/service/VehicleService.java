@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,11 +27,17 @@ public class VehicleService {
     }
 
     public Vehicle create(Vehicle v) {
+
         String tenant = TenantContext.getTenant();
 
-        Dealer dealer = dealerRepo.findByIdAndTenantId(
-                v.getDealerId().getId(), tenant
-        ).orElseThrow(() -> new RuntimeException("Invalid dealer"));
+        Optional<Dealer> dealerOptional =
+                dealerRepo.findByIdAndTenantId(v.getDealerId().getId(), tenant);
+
+        if (dealerOptional.isEmpty()) {
+            throw new RuntimeException("Invalid dealer");
+        }
+
+        Dealer dealer = dealerOptional.get();
 
         v.setId(UUID.randomUUID());
         v.setTenantId(tenant);
@@ -40,10 +47,17 @@ public class VehicleService {
     }
 
     public Vehicle get(UUID id) {
+
         String tenant = TenantContext.getTenant();
 
-        return repo.findByIdAndTenantId(id, tenant)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found or forbidden"));
+        Optional<Vehicle> optionalVehicle =
+                repo.findByIdAndTenantId(id, tenant);
+
+        if (optionalVehicle.isEmpty()) {
+            throw new RuntimeException("Vehicle not found or forbidden");
+        }
+
+        return optionalVehicle.get();
     }
 
     public Page<Vehicle> getAll(String model,
@@ -67,10 +81,17 @@ public class VehicleService {
     }
 
     public Vehicle update(UUID id, Vehicle updated) {
+
         String tenant = TenantContext.getTenant();
 
-        Vehicle existing = repo.findByIdAndTenantId(id, tenant)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found or forbidden"));
+        Optional<Vehicle> optionalVehicle =
+                repo.findByIdAndTenantId(id, tenant);
+
+        if (optionalVehicle.isEmpty()) {
+            throw new RuntimeException("Vehicle not found or forbidden");
+        }
+
+        Vehicle existing = optionalVehicle.get();
 
         if (updated.getModel() != null) {
             existing.setModel(updated.getModel());
@@ -86,22 +107,30 @@ public class VehicleService {
 
         if (updated.getDealerId() != null && updated.getDealerId().getId() != null) {
 
-            Dealer dealer = dealerRepo.findByIdAndTenantId(
-                    updated.getDealerId().getId(), tenant
-            ).orElseThrow(() -> new RuntimeException("Invalid dealer"));
+            Optional<Dealer> dealerOptional =
+                    dealerRepo.findByIdAndTenantId(updated.getDealerId().getId(), tenant);
 
-            existing.setDealerId(dealer);
+            if (dealerOptional.isEmpty()) {
+                throw new RuntimeException("Invalid dealer");
+            }
+
+            existing.setDealerId(dealerOptional.get());
         }
 
         return repo.save(existing);
     }
 
     public void delete(UUID id) {
+
         String tenant = TenantContext.getTenant();
 
-        Vehicle vehicle = repo.findByIdAndTenantId(id, tenant)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found or forbidden"));
+        Optional<Vehicle> optionalVehicle =
+                repo.findByIdAndTenantId(id, tenant);
 
-        repo.delete(vehicle);
+        if (optionalVehicle.isEmpty()) {
+            throw new RuntimeException("Vehicle not found or forbidden");
+        }
+
+        repo.delete(optionalVehicle.get());
     }
 }
