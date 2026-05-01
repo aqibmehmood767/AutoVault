@@ -3,6 +3,7 @@ package com.DealerAndVehicleInventoryModule.controller;
 import com.DealerAndVehicleInventoryModule.entity.Vehicle;
 import com.DealerAndVehicleInventoryModule.enums.SubscriptionType;
 import com.DealerAndVehicleInventoryModule.enums.VehicleStatus;
+import com.DealerAndVehicleInventoryModule.exception.ForbiddenException;
 import com.DealerAndVehicleInventoryModule.service.VehicleService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

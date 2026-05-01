@@ -5,6 +5,7 @@ import com.DealerAndVehicleInventoryModule.entity.Dealer;
 import com.DealerAndVehicleInventoryModule.entity.Vehicle;
 import com.DealerAndVehicleInventoryModule.enums.SubscriptionType;
 import com.DealerAndVehicleInventoryModule.enums.VehicleStatus;
+import com.DealerAndVehicleInventoryModule.exception.ForbiddenException;
 import com.DealerAndVehicleInventoryModule.repository.DealerRepository;
 import com.DealerAndVehicleInventoryModule.repository.VehicleRepository;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,7 @@ public class VehicleService {
                 repo.findByIdAndTenantId(id, tenant);
 
         if (optionalVehicle.isEmpty()) {
-            throw new RuntimeException("Vehicle not found or forbidden");
+            throw new ForbiddenException("Access denied or vehicle not found");
         }
 
         return optionalVehicle.get();
@@ -88,7 +89,7 @@ public class VehicleService {
                 repo.findByIdAndTenantId(id, tenant);
 
         if (optionalVehicle.isEmpty()) {
-            throw new RuntimeException("Vehicle not found or forbidden");
+            throw new ForbiddenException("Access denied or vehicle not found");
         }
 
         Vehicle existing = optionalVehicle.get();
@@ -128,7 +129,7 @@ public class VehicleService {
                 repo.findByIdAndTenantId(id, tenant);
 
         if (optionalVehicle.isEmpty()) {
-            throw new RuntimeException("Vehicle not found or forbidden");
+            throw new ForbiddenException("Access denied or vehicle not found");
         }
 
         repo.delete(optionalVehicle.get());
